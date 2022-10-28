@@ -27,3 +27,5 @@ bool HMotor::move(const direction_t &direction, const uint8_t &speed)
 
     return 1;
 }
+
+

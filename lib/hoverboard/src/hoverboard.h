@@ -24,4 +24,7 @@ class HMotor
     direction_t _Direction { };
 };
 
+#define scaleCh1(x) (((x - 1033)/994)*255)
+#define scaleCh2(y) (((y - 983)/994)*255)
+
 #endif
