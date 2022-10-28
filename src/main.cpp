@@ -8,14 +8,14 @@ int sig = 5;
 // int ch5 = 9;
 // int ch4 = 10;
 // int ch3 = 11;
-// int ch2 = 12;
+int ch2 = 12;
 int ch1 = 8;
 
 // long int ch6Data;
 // long int ch5Data;
 // long int ch4Data;
 // long int ch3Data;
-// long int ch2Data;
+long int ch2Data;
 long int ch1Data;
 
 
@@ -25,7 +25,7 @@ void setup()
 {
   Serial.begin(9600);
   pinMode(ch1, INPUT);
-  // pinMode(ch2, INPUT);
+  pinMode(ch2, INPUT);
   // pinMode(ch3, INPUT);
   // pinMode(ch4, INPUT);
   // pinMode(ch5, INPUT);
@@ -41,7 +41,7 @@ void setup()
 void loop() 
 {
   ch1Data = pulseIn(ch1, HIGH, 25000);
-  // ch2Data = pulseIn(ch2, HIGH, 25000);
+  ch2Data = pulseIn(ch2, HIGH, 25000);
   // ch3Data = pulseIn(ch3, HIGH, 25000);
   // ch4Data = pulseIn(ch4, HIGH, 25000);
   // ch5Data = pulseIn(ch5, HIGH, 25000);
@@ -51,8 +51,8 @@ void loop()
   Serial.print("channel 1:\t");
   Serial.println(ch1Data);
  
-  // Serial.print("channel 2:\t");
-  // Serial.println(ch2Data);
+  Serial.print("channel 2:\t");
+  Serial.println(ch2Data);
 
   // Serial.print("channel 3:\t");
   // Serial.println(ch3Data);
