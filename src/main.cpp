@@ -1,29 +1,27 @@
 #include <Arduino.h>
-
-int dir= 7;
-int vr= 6;
-int sig = 5;
-
-int ch6 = 9;
-int ch5 = 10;
-int ch4 = 8;
-int ch3 = 11;
-int ch2 = 12;
-int ch1 = 13;
+#include "hoverboard.h"
 
 
-void setup() 
+HMotor motor1 (5, 6, 7);
+uint8_t ch1 {4}, ch2{3};
+uint32_t ch1Data { }, ch2Data { }, speed;
+
+
+void setup()
 {
-  pinMode(green, INPUT);
-  pinMode(yellow, INPUT);
-  pinMode(orange, INPUT);
-  pinMode(dir, OUTPUT);
-  pinMode(vr, OUTPUT);
-  pinMode(sig, 1);
-
+  for(int i = 3; i < 5; ++i)
+    pinMode(i, 0);
 }
 
-void loop() 
+void loop()
 {
- 
+  ch1Data = pulseIn(ch1, HIGH, 25000);
+  ch2Data = pulseIn(ch2, HIGH, 25000);
+
+  //TODO:
+  //*** 1. Use value of ch1Data and ch2Data to move motors.
+  //*** 2. ch1Data moves the motor forwards and backwards.
+
+  motor1.move(forward, 127);
+  delay(2000);
 }
