@@ -33,10 +33,10 @@ void loop()
   Serial.println();
   Serial.println();
   delay(200);
-  // delay(2000);
+  // delay(500);
 
   speed = scaleCh2(ch2Data);
 
   motor1.move(forward, speed);
-  delay(2000);
+  delay(500);
 }
