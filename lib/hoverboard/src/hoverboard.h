@@ -20,7 +20,8 @@ class HMotor
     #define DIFF 1
     #endif
     uint8_t _speed { }, _signal { }, _direction { };
-    /* Variables to control speed:  */ uint8_t var1 { }, var2 {DIFF};
+    /* Variables to control speed:  */ 
+    uint8_t var1 { }, var2 {DIFF};
     direction_t _Direction { };
 };
 
