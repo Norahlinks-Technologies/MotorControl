@@ -1,42 +1,52 @@
 #include <Arduino.h>
 #include "hoverboard.h"
-#define _signal 5
-#define _speed 6
-#define _direction 7
+#include "RCLib.h"
+
+#define _signal     5 //Green
+#define _speed      6 //Yellow
+#define _direction  7 //White
+
+uint8_t ch [] = { 3, 4 };   //Pins for channels
 
 
-HMotor motor1 (_signal, _speed, _direction);
-uint8_t ch1 {3}, ch2{4},  speed { };
-uint32_t ch1Data { }, ch2Data { };
+
+HMotor motor1 (_signal, _speed, _direction);    //Motor
+RC remote (2, ch);                              //RC module
+
+uint8_t     speed { };
+
+int32_t    ch1Data { },
+           ch2Data { };
 
 
 void setup()
 {
   Serial.begin(9600);
-  for(int i = 3; i < 5; ++i)
-    pinMode(i, 0);
+  motor1.stop();
 }
 
 void loop()
 {
-  ch1Data = pulseIn(ch1, HIGH, 25000);
-
-
-  Serial.print("Channel 1:\t");
-  Serial.println(ch1Data);
-  Serial.println();
-  delay(200);
-
-  ch2Data = pulseIn(ch2, HIGH, 25000);
-  Serial.print("Channel 2:\t");
+  ch2Data = remote.readJoystick(2, Y);    //Read the joystick via channel 2, which is the Y axis
+  Serial.print("Channel 2: \t");
   Serial.println(ch2Data);
-  Serial.println();
-  Serial.println();
-  delay(200);
-  // delay(2000);
 
-  speed = scaleCh2(ch2Data);
+  if(ch2Data < 0)
+  {
+    ch2Data = abs(ch2Data);           //Make the value of ch2Data positive if negative
 
-  motor1.move(forward, speed);
-  delay(2000);
+    motor1.move(backward, ch2Data);
+  }
+
+  else if(ch2Data == 0)
+  {
+    motor1.stop();
+  }
+
+  else
+  {
+    motor1.move(forward, ch2Data);
+  }
+
+  delay(500);
 }
