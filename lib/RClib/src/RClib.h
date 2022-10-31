@@ -2,30 +2,31 @@
 #define __RCLIB_H__
 
 //X and Y values of joystick(s) on remote control, measured using pulseIn()
-#define XMIN    1033
-#define XMAX    2027
-#define YMIN    983
-#define YMAX    1977
+#define XMIN    1034
+#define XMAX    2028
+#define YMIN    984
+#define YMAX    1978
 
 
 #include <Arduino.h>
 
+using ulong = unsigned long;
 namespace RClib
 {
     template <typename T>
-        const int32_t &mapX(const uint8_t &num, const T &rem, const uint32_t &outMin, const uint32_t &outMax)
+        const long &mapX(const long &num, const T *rem, const long &outMin, const long &outMax)
         {
-            static int32_t temp { };
-            temp = (num - rem.xMin) * (outMax - outMin) / (rem.xMax - rem.xMin) + outMin;
+            static long temp { };
+            temp = (num - rem->xMin) * (outMax - outMin) / (rem->xMax - rem->xMin) + outMin;
             return (temp);
         }
 
 
     template <typename T>
-        const int32_t &mapY(const uint8_t &num, const T &rem, const uint32_t &outMin, const uint32_t &outMax)
+        const long &mapY(const long &num, const T *rem, const long &outMin, const long &outMax)
         {
-            static int32_t temp { };
-            temp = (num - rem.xMin) * (outMax - outMin) / (rem.xMax - rem.xMin) + outMin;
+            static long temp { };
+            temp = (num - rem->xMin) * (outMax - outMin) / (rem->xMax - rem->xMin) + outMin;
             return (temp);
         }
 }
@@ -46,13 +47,13 @@ class RC
     ~RC();
 
     //Methods:
-    int32_t readJoystick(const uint8_t &ch, const axis_t &axis);
+    long readJoystick(const uint8_t &ch, const axis_t &axis);
     uint16_t readButton(const uint8_t &ch);
 
     template <typename T>
-    friend const int32_t& RClib::mapX(const uint8_t &num, T &rem, const uint32_t &outMin, const uint32_t &outMax);
+    friend const long& RClib::mapX(const uint8_t &num, T &rem, const long &outMin, const long &outMax);
     template <typename T>
-    friend const int32_t& RClib::mapY(const uint8_t &num, T &rem, const uint32_t &outMin, const uint32_t &outMax);
+    friend const long& RClib::mapY(const uint8_t &num, T &rem, const long &outMin, const long &outMax);
 
     uint16_t xMin, xMax, yMin, yMax;
 

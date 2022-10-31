@@ -27,16 +27,25 @@ RC::~RC()
   chPins = nullptr;
 }
 
-int32_t RC::readJoystick(const uint8_t &ch, const axis_t &axis)
+long RC::readJoystick(const uint8_t &ch, const axis_t &axis)
 {
   using namespace RClib;
-  static auto temp = pulseIn(chPins[ch-1], HIGH, 25000);
+  static unsigned long temp;
+  temp = pulseIn(chPins[ch-1], HIGH, 25000);
   delay(100);
 
   if(axis == X)
-    return RClib::mapX(temp, *this, -255, 255);
+  {
+    temp = (RClib::mapX(temp, this, -256, 255));
+
+    return (temp);
+  }
   else
-    return RClib::mapY(temp, *this, -255, 255);
+  {
+    temp = (RClib::mapY(temp, this, -256, 255));
+
+    return (temp);
+  }
 }
 
 uint16_t RC::readButton(const uint8_t &ch)

@@ -13,7 +13,7 @@ uint8_t chPins []= { 3, 4 };   //Pins for channels
 HMotor motor1 (_signal_pin, _speed_pin, _direction_pin);    //Hoverboard Motor
 RC remote (2, chPins);                                      //RC module, using 2 channels connected to pins 3 & 4
 
-int32_t    ch1Data { },
+long       ch1Data { },
            ch2Data { };
 
 
@@ -26,13 +26,15 @@ void setup()
 void loop()
 {
   ch2Data = remote.readJoystick(2, Y);    //Read the joystick via channel 2, which is the Y axis
+
   Serial.print("Channel 2: \t");
   Serial.println(ch2Data);
+
 
   if(ch2Data < 0)
   {
     ch2Data = abs(ch2Data);           //Make the value of ch2Data positive
-    ch2Data = lowByte(ch2Data);
+    ch2Data = constrain(ch2Data, 0, 255);
 
     motor1.move(backward, ch2Data);
   }
@@ -45,6 +47,7 @@ void loop()
 
   else
   {
+    ch2Data = constrain(ch2Data, 0, 255);
     motor1.move(forward, ch2Data);
   }
 
