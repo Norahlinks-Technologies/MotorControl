@@ -1,16 +1,6 @@
 #include <Arduino.h>
 #include "RClib.h"
 
-// const uint32_t &RClib::mapX(const uint8_t &num, const RC &rem, const uint32_t &outMin, const uint32_t &outMax)
-// {
-//   return ((num - rem.xMin) * (outMax - outMin) / (rem.xMax - rem.xMin) + outMin);
-// }
-
-// const uint32_t &RClib::mapY(const uint8_t &num, const RC &rem, const uint32_t &outMin, const uint32_t &outMax)
-// {
-//   return ((num - rem.xMin) * (outMax - outMin) / (rem.xMax - rem.xMin) + outMin);
-// }
-
 
 RC::RC(const uint8_t &numChannels, const uint8_t *channelPins)
   :xMin {XMIN}, xMax {XMAX}, yMin {YMIN}, yMax {YMAX}, chPins { new uint8_t[numChannels]}

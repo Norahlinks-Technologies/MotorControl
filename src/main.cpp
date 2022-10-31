@@ -2,18 +2,16 @@
 #include "hoverboard.h"
 #include "RCLib.h"
 
-#define _signal     5 //Green
-#define _speed      6 //Yellow
-#define _direction  7 //White
+#define _signal_pin     5 //Green
+#define _speed_pin      6 //Yellow
+#define _direction_pin  7 //White
 
-uint8_t ch [] = { 3, 4 };   //Pins for channels
+uint8_t chPins []= { 3, 4 };   //Pins for channels
 
 
 
-HMotor motor1 (_signal, _speed, _direction);    //Motor
-RC remote (2, ch);                              //RC module
-
-uint8_t     speed { };
+HMotor motor1 (_signal_pin, _speed_pin, _direction_pin);    //Hoverboard Motor
+RC remote (2, chPins);                                      //RC module, using 2 channels connected to pins 3 & 4
 
 int32_t    ch1Data { },
            ch2Data { };
@@ -33,13 +31,15 @@ void loop()
 
   if(ch2Data < 0)
   {
-    ch2Data = abs(ch2Data);           //Make the value of ch2Data positive if negative
+    ch2Data = abs(ch2Data);           //Make the value of ch2Data positive
+    ch2Data = lowByte(ch2Data);
 
     motor1.move(backward, ch2Data);
   }
 
   else if(ch2Data == 0)
   {
+    ch2Data = lowByte(ch2Data);
     motor1.stop();
   }
 
