@@ -26,7 +26,7 @@ namespace RClib
         const long &mapY(const long &num, const T *rem, const long &outMin, const long &outMax)
         {
             static long temp { };
-            temp = (num - rem->xMin) * (outMax - outMin) / (rem->xMax - rem->xMin) + outMin;
+            temp = (num - rem->yMin) * (outMax - outMin) / (rem->yMax - rem->yMin) + outMin;
             return (temp);
         }
 }

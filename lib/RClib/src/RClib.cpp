@@ -30,7 +30,7 @@ RC::~RC()
 long RC::readJoystick(const uint8_t &ch, const axis_t &axis)
 {
   using namespace RClib;
-  static unsigned long temp;
+  static ulong temp;
   temp = pulseIn(chPins[ch-1], HIGH, 25000);
   delay(100);
 
