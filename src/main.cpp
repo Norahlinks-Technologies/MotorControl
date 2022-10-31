@@ -6,7 +6,7 @@
 #define _speed_pin      6 //Yellow
 #define _direction_pin  7 //White
 
-uint8_t chPins []= { 3, 4 };   //Pins for channels
+uint8_t chPins[2] { 3, 4 };   //Pins for channels
 
 
 
