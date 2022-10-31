@@ -1,45 +1,55 @@
 #include <Arduino.h>
 #include "hoverboard.h"
-#define _signal 5
-#define _speed 6
-#define _direction 7
+#include "RCLib.h"
+
+#define _signal_pin     5 //Green
+#define _speed_pin      6 //Yellow
+#define _direction_pin  7 //White
+
+uint8_t chPins []= { 3, 4 };   //Pins for channels
 
 
-HMotor motor1 (_signal, _speed, _direction); //contructor from class HMotor
-uint8_t ch1 {3}, ch2{4},  speed { };
-uint32_t ch1Data { }, ch2Data { };
+
+HMotor motor1 (_signal_pin, _speed_pin, _direction_pin);    //Hoverboard Motor
+RC remote (2, chPins);                                      //RC module, using 2 channels connected to pins 3 & 4
+
+long       ch1Data { },
+           ch2Data { };
 
 
 void setup()
 {
   Serial.begin(9600);
-  for(int i = 3; i < 5; ++i)
-    pinMode(i, 0);
-  /* Aternatively 
-    pinMode(3,INPUT);
-    pinMode(4, INPUT);
-  
-  */  
+  motor1.stop();
 }
 
 void loop()
 {
-  ch1Data = pulseIn(ch1, HIGH, 25000); // check state and value of ch1
-  Serial.print("Channel 1:\t");
-  Serial.println(ch1Data); // prints the value to the screen
-  Serial.println();
-  delay(200);
+  ch2Data = remote.readJoystick(2, Y);    //Read the joystick via channel 2, which is the Y axis
 
-  ch2Data = pulseIn(ch2, HIGH, 25000);// check state and value of ch2
-  Serial.print("Channel 2:\t");
-  Serial.println(ch2Data); // prints the value to the screen
-  Serial.println();
-  Serial.println();
-  delay(200);
-  // delay(2000);
+  Serial.print("Channel 2: \t");
+  Serial.println(ch2Data);
 
-  speed = scaleCh2(ch2Data);
 
-  motor1.move(forward, speed);
-  delay(2000);
+  if(ch2Data < 0)
+  {
+    ch2Data = abs(ch2Data);           //Make the value of ch2Data positive
+    ch2Data = constrain(ch2Data, 0, 255);
+
+    motor1.move(backward, ch2Data);
+  }
+
+  else if(ch2Data == 0)
+  {
+    ch2Data = lowByte(ch2Data);
+    motor1.stop();
+  }
+
+  else
+  {
+    ch2Data = constrain(ch2Data, 0, 255);
+    motor1.move(forward, ch2Data);
+  }
+
+  delay(500);
 }
