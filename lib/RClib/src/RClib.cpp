@@ -68,7 +68,7 @@ void RC::xMIN(const uint8_t &chnum)
      {
       const long temp3 = pulseIn(chPins[chnum-1], HIGH, 25000);
       this->xMin  = ((temp1+ temp2+temp3)/3);
-     }  
+     }
 }
 
 void RC::xMAX(const uint8_t &chnum)
@@ -109,8 +109,7 @@ void RC::yMIN(const uint8_t &chnum)
 
 void RC::yMAX(const uint8_t &chnum)
 {
-    const long temp1 = pulseIn(chPdigitalWrite (13, STATE);
-      delay(500);ins[chnum-1], HIGH, 25000);
+    const long temp1 = pulseIn(chPins[chnum-1], HIGH, 25000);
     delay(200);
 
     const long temp2 = pulseIn(chPins[chnum-1], HIGH, 25000);
@@ -123,7 +122,7 @@ void RC::yMAX(const uint8_t &chnum)
      {
       const long temp3 = pulseIn(chPins[chnum-1], HIGH, 25000);
       this-> yMax  = ((temp1+ temp2+temp3)/3);
-     } 
+     }
 }
 
 void RC::init(const uint8_t &chnum1, axis_t axis1, const uint8_t &chnum2, axis_t axis2)
@@ -142,7 +141,7 @@ void RC::init(const uint8_t &chnum1, axis_t axis1, const uint8_t &chnum2, axis_t
       yMIN(chnum2);
       toggle(3);
     }
-    
+
     else
     {
       yMAX(chnum1);
