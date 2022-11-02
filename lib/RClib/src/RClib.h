@@ -42,11 +42,14 @@ class RC
 
     explicit RC(const uint8_t &numChannels, const uint8_t *channelPins);        //To use default X and Y values
 
-    explicit RC(const uint8_t &numChannels, const uint8_t *channelPins, const uint8_t &xmin, const uint8_t &xmax, const uint8_t &ymin, const uint8_t &ymax);                    //To define X and Y values
+    explicit RC(const uint8_t &numChannels, const uint8_t *channelPins, const uint8_t &xmin, const uint8_t &xmax, const uint8_t &ymin, const uint8_t &ymax);                   
+     //To define X and Y values
+
 
     ~RC();
 
     //Methods:
+    void init(const uint8_t &chnum1, axis_t axis1, const uint8_t &chnum2, axis_t axis2);
     long readJoystick(const uint8_t &ch, const axis_t &axis);
     uint16_t readButton(const uint8_t &ch);
 
@@ -61,6 +64,14 @@ class RC
     private:
     //Attributes:
     uint8_t *chPins;
-};
 
+    // Methods :
+    void xMIN(const uint8_t &chnum);
+    void xMAX(const uint8_t &chnum);
+    void yMIN(const uint8_t &chnum);
+    void yMAX(const uint8_t &chnum);
+
+    void toggle(uint8_t times);
+
+};
 #endif
