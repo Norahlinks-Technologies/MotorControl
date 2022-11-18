@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include <EEPROM.h>
 #include "RClib.h"
 
 
@@ -36,13 +37,13 @@ long RC::readJoystick(const uint8_t &ch, const axis_t &axis)
 
   if(axis == X)
   {
-    temp = (RClib::mapX(temp, this, -256, 255));
+    temp = (RClib::mapX<RC>(temp, this, -256, 255));
 
     return (temp);
   }
   else
   {
-    temp = (RClib::mapY(temp, this, -256, 255));
+    temp = (RClib::mapY<RC>(temp, this, -256, 255));
 
     return (temp);
   }
@@ -130,17 +131,21 @@ void RC::init(const uint8_t &chnum1, axis_t axis1, const uint8_t &chnum2, axis_t
   pinMode(13, OUTPUT);
   toggle(3);
 
-  if(axis1  == X)
-    {
-      xMIN(chnum1);
-      toggle(3);
-      xMAX(chnum1);
-      toggle(3);
-      yMAX(chnum2);
-      toggle(3);
-      yMIN(chnum2);
-      toggle(3);
-    }
+  if(EEPROM.read(0) == 0)
+  {
+    if(axis1  == X)
+      {
+        xMIN(chnum1);
+        toggle(3);
+        xMAX(chnum1);
+        toggle(3);
+        yMAX(chnum2);
+        toggle(3);
+        yMIN(chnum2);
+        toggle(3);
+        EEPROM.write(0, 1);
+        digitalWrite(13, 1);
+      }
 
     else
     {
@@ -152,8 +157,12 @@ void RC::init(const uint8_t &chnum1, axis_t axis1, const uint8_t &chnum2, axis_t
       toggle(3);
       xMAX(chnum2);
       toggle(3);
+      EEPROM.write(0, 1);
+      digitalWrite(13, 1);
     }
-
+  }
+  else
+    digitalWrite(13, 1);
 }
 
 void RC::toggle(uint8_t times)

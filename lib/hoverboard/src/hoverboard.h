@@ -16,6 +16,7 @@ class HMotor
 
     //Methods:
     bool move(const direction_t &direction, const uint8_t &speed);
+    bool move(const bool &direction, const uint8_t &speed) { (this->move(direction, speed)) ? 1 : 0; }
     void stop(void);
 
     private:

@@ -2,13 +2,14 @@
 #define __RCLIB_H__
 
 //X and Y values of joystick(s) on remote control, measured using pulseIn()
-#define XMIN    1034
-#define XMAX    2028
-#define YMIN    984
-#define YMAX    1978
+#define XMIN    952
+#define XMAX    1863
+#define YMIN    897
+#define YMAX    1814
 
 
 #include <Arduino.h>
+#include <EEPROM.h>
 
 using ulong = unsigned long;
 namespace RClib
@@ -42,7 +43,7 @@ class RC
 
     explicit RC(const uint8_t &numChannels, const uint8_t *channelPins);        //To use default X and Y values
 
-    explicit RC(const uint8_t &numChannels, const uint8_t *channelPins, const uint8_t &xmin, const uint8_t &xmax, const uint8_t &ymin, const uint8_t &ymax);                   
+    explicit RC(const uint8_t &numChannels, const uint8_t *channelPins, const uint8_t &xmin, const uint8_t &xmax, const uint8_t &ymin, const uint8_t &ymax);
      //To define X and Y values
 
 
