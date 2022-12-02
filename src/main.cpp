@@ -22,9 +22,7 @@
 
 uint8_t chPins[] { 17, 18, 19, 20, 21, 22 };   //Pins for channels
 
-control_t control { _CAR };
 direction_t currentDir { };
-bool checkSwitch(void);
 
 void moveForwards(const uint8_t&);
 void moveBackwards(const uint8_t&);
@@ -41,15 +39,8 @@ HMotor motor4(_signal_pin4, _speed_pin4, _direction_pin4);
 
 RC remote (2, chPins);                                    //RC module, using 2 channels connected to pins 3 & 4
 
-// ARM act1(extendPin1, retractPin1);
-// ARM act2(extendPin1, retractPin1);
-
-
 long       ch1Data { },
            ch2Data { },
-           ch4Data { },
-           ch5Data { },
-           ch6Data { },
            ch1Ref { },
            ch2Ref { };
 
@@ -73,13 +64,6 @@ void loop()
   ch2Data = remote.readJoystick(2, Y);    //Read the joystick via channel 2, which is the Y axis
 
 
-  // if (checkSwitch() == true)
-  // {
-  //   control = (control_t) !control;
-  // }
-
-  // if(control == _CAR)
-  // {
     if(ch2Data < ch2Ref)
     {
       ch2Data = abs(ch2Data);           //Make the value of ch2Data positive
