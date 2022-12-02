@@ -43,7 +43,7 @@ long RC::readJoystick(const uint8_t &ch, const axis_t &axis)
   }
   else
   {
-    temp = (RClib::mapY<RC>(temp, this, -256, 255));
+    temp = (RClib::mapY<RC>(temp, this, 255, -256));
 
     return (temp);
   }

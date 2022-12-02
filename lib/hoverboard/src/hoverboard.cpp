@@ -7,17 +7,15 @@ HMotor::HMotor(const uint8_t &signalPin, const uint8_t &speedPin, const uint8_t 
     pinMode(_signal, 1);
     pinMode(_direction, 1);
     pinMode(_speed, 1);
-    _Direction = new direction_t { };
 }
 
-bool HMotor::move(const direction_t &direction, const uint8_t &speed)
+bool HMotor::move(const direction_t &Direction, const uint8_t &speed)
 {
-    *_Direction = direction;
     if(speed < 0 || speed > 255)
         return 0;
 
     digitalWrite(_signal, 1);
-    digitalWrite(_direction, *_Direction);
+    digitalWrite(_direction, (int) Direction);
 
 
     analogWrite(_speed, speed);
@@ -27,8 +25,7 @@ bool HMotor::move(const direction_t &direction, const uint8_t &speed)
 
 HMotor::~HMotor()
 {
-    delete _Direction;
-    _Direction = nullptr;
+
 }
 
 
