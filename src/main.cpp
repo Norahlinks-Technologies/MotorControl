@@ -25,7 +25,7 @@ uint8_t chPins[] { 17, 18, 19, 20, 21, 22 };   //Pins for channels
 void setup();
 void loop();
 
-direction_t *currentDir { new direction_t (forward)};
+direction_t currentDir { };
 
 inline void moveForwards(const uint8_t&);
 inline void moveBackwards(const uint8_t&);
@@ -65,12 +65,12 @@ void loop()
   ch2Data = remote.readJoystick(2, Y);    //Read the joystick via channel 2, which is the Y axis
 
 
-  if((ch2Data == ch2Ref && ch1Data == ch1Ref) || ((ch2Data == 0) && (ch1Data == 0)))
+    if((ch2Data == ch2Ref && ch1Data == ch1Ref) || ((ch2Data == 0) && (ch1Data == 0)))
     {
       stop();
     }
 
-     else if((ch2Data == ch2Ref) && (ch1Data > ch1Ref))
+    else if((ch2Data == ch2Ref) && (ch1Data > ch1Ref))
     {
       ch1Data = abs(ch1Data);
       ch1Data = constrain(ch1Data, 0, 255);
@@ -151,7 +151,7 @@ void moveForwards(const uint8_t& speed)
   motor3.move(forward, speed);
   motor2.move(backward, speed);
   motor4.move(backward, speed);
-  *currentDir = forward;
+  currentDir = forward;
 }
 
 void moveBackwards(const uint8_t& speed)
@@ -160,23 +160,23 @@ void moveBackwards(const uint8_t& speed)
   motor3.move(backward, speed);
   motor2.move(forward, speed);
   motor4.move(forward, speed);
-  *currentDir = backward;
+  currentDir = backward;
 }
 
 void moveLeft(const uint8_t& speed)
 {
-  motor1.move(!(*currentDir), 255 - speed);
-  motor2.move(*currentDir, speed);
-  motor3.move(!(*currentDir), 255 - speed);
-  motor4.move(*currentDir, speed);
+  motor1.move(!currentDir, (255 - speed));
+  motor2.mov(currentDir, speed);
+  motor3.move(!currentDir, (255 - speed));
+  motor4.move(currentDir, speed);
 }
 
 void moveRight(const uint8_t& speed)
 {
-  motor1.move(*currentDir, speed);
-  motor2.move(!(*currentDir), 255 - speed);
-  motor3.move(*currentDir, speed);
-  motor4.move(!(*currentDir), 255 - speed);
+  motor1.move(currentDir, speed);
+  motor2.move(!currentDir, (255 - speed));
+  motor3.move(currentDir, speed);
+  motor4.move(!currentDir, (255 - speed));
 }
 
 void stop(void)

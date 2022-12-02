@@ -32,5 +32,5 @@ HMotor::~HMotor()
 void HMotor::stop()
 {
     digitalWrite(_signal, 0);
-    analogWrite(_speed, 0);
+    digitalWrite(_speed, 0);
 }
