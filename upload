@@ -1,2 +1,0 @@
-pio run && pio run -t upload
-#pio device monitor -e uno -b 9600 

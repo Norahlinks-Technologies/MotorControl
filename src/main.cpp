@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include "hoverboard.h"
-#include "RCLib.h"
-#include "RCCar.h"
+#include "RClib.h"
+// #include "RCCar.h"
 #include "armCode.h"
 
 #define _signal_pin1     5 //Red
@@ -16,42 +16,35 @@
 #define _speed_pin3      12 //Yellow
 #define _direction_pin3  13 //White
 
-#define _signal_pin4     A0 //Red
-#define _speed_pin4      A1 //Yellow
-#define _direction_pin4  A2 //White
-#define extendPin1       18
-#define retractPin1      19
-#define extendPin2       20
-#define retractPin2      21
+#define _signal_pin4     14 //Red
+#define _speed_pin4      15 //Yellow
+#define _direction_pin4  16 //White
+
+uint8_t chPins[] { 17, 18, 19, 20, 21, 22 };   //Pins for channels
+
+void setup();
+void loop();
+
+direction_t currentDir { };
+
+inline void moveForwards(const uint8_t&);
+inline void moveBackwards(const uint8_t&);
+inline void moveLeft(const uint8_t&);
+inline void moveRight(const uint8_t&);
+inline void stop();
 
 
-enum control_t { _ARM = (bool) 0, _CAR = (bool) 1 };
+HMotor motor4 (_signal_pin1, _speed_pin1, _direction_pin1);
+HMotor motor3 (_signal_pin2, _speed_pin2, _direction_pin2);
+HMotor motor2 (_signal_pin3, _speed_pin3, _direction_pin3);
+HMotor motor1 (_signal_pin4, _speed_pin4, _direction_pin4);
 
-uint8_t chPins[] { 3, 4, 14, 15, 16, 17 };   //Pins for channels
-
-control_t control { _CAR };
-bool checkSwitch(void);
-
-
-
-HMotor motor1 (_signal_pin1, _speed_pin1, _direction_pin1);  //Hoverboard Motor1
-HMotor motor2(_signal_pin2, _speed_pin2, _direction_pin2);
-HMotor motor3(_signal_pin3, _speed_pin3, _direction_pin3);
-HMotor motor4(_signal_pin4, _speed_pin4, _direction_pin4);
-
-RCCar car(&motor1, &motor2, &motor3, &motor4);                  //Remote controlled car
+// RCCar car(&motor1, &motor2, &motor3, &motor4);                  //Remote controlled car
 
 RC remote (2, chPins);                                    //RC module, using 2 channels connected to pins 3 & 4
 
-ARM act1(extendPin1, retractPin1);
-ARM act2(extendPin1, retractPin1);
-
-
 long       ch1Data { },
            ch2Data { },
-           ch4Data { },
-           ch5Data { },
-           ch6Data { },
            ch1Ref { },
            ch2Ref { };
 
@@ -61,7 +54,7 @@ void setup()
   // remote.init(2, Y, 1, X);
 
   // Serial.begin(9600);
-  car.stop();
+  stop();
   ch1Ref = remote.readJoystick(1, X);
   ch2Ref = remote.readJoystick(2, Y);
 }
@@ -71,81 +64,125 @@ void loop()
   ch1Data = remote.readJoystick(1, X);
   ch2Data = remote.readJoystick(2, Y);    //Read the joystick via channel 2, which is the Y axis
 
-  if (checkSwitch() == true)
-  {
-    control = (control_t) !control;
-  }
 
-  if(control == _CAR)
-  {
-    if(ch2Data < 0)
+    if((ch2Data == ch2Ref && ch1Data == ch1Ref) || ((ch2Data == 0) && (ch1Data == 0)))
     {
-      ch2Data = abs(ch2Data);           //Make the value of ch2Data positive
-      ch2Data = constrain(ch2Data, 0, 255);
-
-      car.moveForwards(ch2Data);
+      stop();
     }
 
-    else if((ch2Data == ch2Ref) && (ch1Data == ch1Ref))
-    {
-      car.stop();
-    }
-
-    else
-    {
-      ch2Data = constrain(ch2Data, 0, 255);
-      car.moveBackwards(ch2Data);
-    }
-
-    if(ch1Data < 0)             //Joystick towards left
+    else if((ch2Data == ch2Ref) && (ch1Data > ch1Ref))
     {
       ch1Data = abs(ch1Data);
       ch1Data = constrain(ch1Data, 0, 255);
-
-      if(car.isForward())
-        car.moveLeft(forward, ch1Data);
-
-      else if(car.isBackward())
-        car.moveLeft(backward, ch1Data);
-
+      ch2Data = constrain(ch2Data, 0, 255);
+      moveForwards(ch2Data);
+      moveRight(ch1Data);
     }
 
-    else if((ch1Data == ch1Ref) && (ch2Data == ch2Ref))      //Joystick at centre
+    else if((ch2Data == ch2Ref) && (ch1Data < ch1Ref))
     {
-      car.stop();
-    }
-
-    else                          //Joystick towards right
-    {
+      ch2Data = constrain(ch2Data, 0, 255);
       ch1Data = constrain(ch1Data, 0, 255);
-
-      if(car.isForward())
-        car.moveRight(forward, ch1Data);
-
-      else if(car.isBackward())
-        car.moveRight(backward, ch1Data);
+      moveForwards(ch2Data);
+      moveLeft(ch1Data);
     }
-    delay(250);
-    
+
+    else if((ch2Data < ch2Ref) && (ch1Data < ch1Ref))
+    {
+      ch2Data = abs(ch2Data);           //Make the value of ch2Data positive
+      // ch2Data = map(ch2Data, 0, 255, 25, 250);   //TODO: Change after testing
+      ch2Data = constrain(ch2Data, 0, 255);
+      ch1Data = abs(ch1Data);
+      ch1Data = constrain(ch1Data, 0, 255);
+      moveBackwards(ch2Data);
+      moveLeft(ch1Data);
+    }
+
+
+    else if((ch2Data < ch2Ref) && (ch1Data == ch1Ref))
+    {
+      ch2Data = abs(ch2Data);
+      ch2Data = constrain(ch2Data, 0, 255);
+      moveBackwards(ch2Data);
+    }
+
+    else if((ch2Data < ch2Ref) && (ch1Data > ch1Ref))
+    {
+      ch2Data = abs(ch2Data);
+      ch2Data = constrain(ch2Data, 0, 255);
+      ch1Data = constrain(ch1Data, 0, 255);
+      moveBackwards(ch2Data);
+      moveRight(ch1Data);
+    }
+
+
+
+    else if((ch2Data > ch2Ref) && (ch1Data == ch1Ref))
+    {
+      ch2Data = constrain(ch2Data, 0, 255);
+      moveForwards(ch2Data);
+    }
+
+    else if((ch2Data > ch2Ref) && (ch1Data < ch1Ref))
+    {
+      ch1Data = abs(ch1Data);
+      ch1Data = constrain(ch1Data, 0, 255);
+      ch2Data = constrain(ch2Data, 0, 255);
+      moveForwards(ch2Data);
+      moveLeft(ch1Data);
+    }
+
+    else if((ch2Data > ch2Ref) && (ch1Data > ch1Ref))
+    {
+      ch2Data = abs(ch2Data);
+      ch1Data = constrain(ch1Data, 0, 255);
+      ch2Data = constrain(ch2Data, 0, 255);
+      moveForwards(ch2Data);
+      moveRight(ch1Data);
+    }
+    delay(10);
+
   }
 
-  else
-  {
-    act1.stop();
-    act1.extendArm(ch1Data);
-    act1.retractArm(ch1Data);
-    act2.stop();
-    act2.extendArm(ch2Data);
-    act2.retractArm(ch2Data);
-  }
 
+void moveForwards(const uint8_t& speed)
+{
+  motor1.move(forward, speed);
+  motor3.move(forward, speed);
+  motor2.move(backward, speed);
+  motor4.move(backward, speed);
+  currentDir = forward;
 }
 
-bool checkSwitch(void)
+void moveBackwards(const uint8_t& speed)
 {
-  if (remote.readButton(chPins[2]) > 1000)
-    return (true);
-  else
-    return (false);
+  motor1.move(backward, speed);
+  motor3.move(backward, speed);
+  motor2.move(forward, speed);
+  motor4.move(forward, speed);
+  currentDir = backward;
+}
 
+void moveLeft(const uint8_t& speed)
+{
+  motor1.move(!currentDir, (255 - speed));
+  motor2.mov(currentDir, speed);
+  motor3.move(!currentDir, (255 - speed));
+  motor4.move(currentDir, speed);
+}
+
+void moveRight(const uint8_t& speed)
+{
+  motor1.move(currentDir, speed);
+  motor2.move(!currentDir, (255 - speed));
+  motor3.move(currentDir, speed);
+  motor4.move(!currentDir, (255 - speed));
+}
+
+void stop(void)
+{
+  motor1.stop();
+  motor2.stop();
+  motor3.stop();
+  motor4.stop();
 }
